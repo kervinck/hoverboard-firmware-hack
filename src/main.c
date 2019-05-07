@@ -66,6 +66,8 @@ uint8_t button1, button2, button1_ADC, button2_ADC;
 int steer; // global variable for steering. -1000 to 1000
 int speed; // global variable for speed. -1000 to 1000
 
+int speedL, speedR;
+
 extern volatile int pwml;  // global variable for pwm left. -1000 to 1000
 extern volatile int pwmr;  // global variable for pwm right. -1000 to 1000
 extern volatile int weakl; // global variable for field weakening left. -1000 to 1000
@@ -490,8 +492,9 @@ int main(void) {
       inactivity_timeout_counter ++;
     }
 
+#if 0
     // inactivity 10s warning; 1s bleeping
-    if ((inactivity_timeout_counter > (INACTIVITY_TIMEOUT * 50 * 1000) / (DELAY_IN_MAIN_LOOP + 1)) &&
+    if ((inactivity_timeout_counter > ((INACTIVITY_TIMEOUT * 60 - 10) * 1000) / (DELAY_IN_MAIN_LOOP + 1)) &&
         (buzzerFreq == 0)) {
       buzzerFreq = 3;
       buzzerPattern = 1;
@@ -499,19 +502,19 @@ int main(void) {
     }
 
     // inactivity 5s warning; 1s bleeping
-    if ((inactivity_timeout_counter > (INACTIVITY_TIMEOUT * 55 * 1000) / (DELAY_IN_MAIN_LOOP + 1)) &&
+    if ((inactivity_timeout_counter > ((INACTIVITY_TIMEOUT * 60 - 5) * 1000) / (DELAY_IN_MAIN_LOOP + 1)) &&
         (buzzerFreq == 0)) {
       buzzerFreq = 2;
       buzzerPattern = 1;
       buzzerLen = 1000;
     }
+#endif
 
-    // power off after ~60s of inactivity
+    // power off after ~30 mins of inactivity
     if (inactivity_timeout_counter > (INACTIVITY_TIMEOUT * 60 * 1000) / (DELAY_IN_MAIN_LOOP + 1)) {  // rest of main loop needs maybe 1ms
           inactivity_timeout_counter = 0;
         poweroff();
     }
-
 
     if (powerofftimer > 0){
       powerofftimer --;

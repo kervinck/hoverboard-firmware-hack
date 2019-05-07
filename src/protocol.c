@@ -94,6 +94,8 @@ extern int enablescope; // enable scope on values
 extern int steer; // global variable for steering. -1000 to 1000
 extern int speed; // global variable for speed. -1000 to 1000
 
+extern volatile int pwml, pwmr;
+
 int speedB = 0;
 int steerB = 0;
 int8_t humanProtocolActive = 0;
@@ -189,8 +191,8 @@ SPEEDS speedsx = {0,0};
 void PreRead_getspeeds(void){
     speedsx.speedl = SpeedData.wanted_speed_mm_per_sec[0];
     speedsx.speedr = SpeedData.wanted_speed_mm_per_sec[1];
-    PwmSteerCmd.base_pwm = speed;
-    PwmSteerCmd.steer = steer;
+    PwmSteerCmd.pwml = pwml;
+    PwmSteerCmd.pwmr = pwmr;
 }
 
 // after write we call this...
@@ -837,6 +839,14 @@ void process_message(PROTOCOL_MSG *msg){
                         writevals->content[j] = *(src++);
                     }
                     msg->len = 1+1+1+params[i].len+1;
+                    // Note marcelk: 0x02 + <len> + 'R' + <data...> + <UNDEF> + <checksum>
+                    // 0x02             PROTOCOL_SOM (start of message)
+                    // <len>            total message length, including <SOM> and <checksum>
+                    // 'R'              confirms read command
+                    // <data...>
+                    // <UNDEF>          off by one error
+                    // <checksum>       checksum
+
                     // send back with 'read' command plus data like write.
                     protocol_send(msg);
                     if (params[i].postread) params[i].postread();

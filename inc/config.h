@@ -39,7 +39,7 @@
 #define TEMP_POWEROFF_ENABLE    0         // to poweroff or not to poweroff, 1 or 0, DO NOT ACTIVITE WITHOUT CALIBRATION!
 #define TEMP_POWEROFF           65        // overheat poweroff. (while not driving) [°C]
 
-#define INACTIVITY_TIMEOUT 8        // minutes of not driving until poweroff. it is not very precise.
+#define INACTIVITY_TIMEOUT 30        // minutes of not driving until poweroff. it is not very precise.
 
 // ############################### LCD DEBUG ###############################
 
@@ -48,7 +48,7 @@
 // ############################### SERIAL DEBUG ###############################
 
 //#define DEBUG_SERIAL_USART2       // left sensor board cable, disable if ADC or PPM is used!
-#define DEBUG_SERIAL_USART3         // right sensor board cable, disable if I2C (nunchuck or lcd) is used!
+//#define DEBUG_SERIAL_USART3         // right sensor board cable, disable if I2C (nunchuck or lcd) is used!
 
 //#define DEBUG_SERIAL_SERVOTERM
 #define DEBUG_SERIAL_ASCII          // "1:345 2:1337 3:0 4:0 5:0 6:0 7:0 8:0\r\n"
@@ -62,8 +62,8 @@
 // for Arduino, use void loop(void){ Serial.write((uint8_t *) &steer, sizeof(steer)); Serial.write((uint8_t *) &speed, sizeof(speed));delay(20); }
 //#define CONTROL_SERIAL_NAIVE_CRC                  // Add CRC32 check to control serial
 
-//#define CONTROL_SERIAL_PROTOCOL                     // enables processing of input characters through 'protocol.c'
-//  #define SERIAL_USART2_IT                        // Interface for CONTROL_SERIAL_PROTOCOL
+#define CONTROL_SERIAL_PROTOCOL                     // enables processing of input characters through 'protocol.c'
+  #define SERIAL_USART2_IT                        // Interface for CONTROL_SERIAL_PROTOCOL
   #define USART2_BAUD       19200                   // UART baud rate
   #define USART2_WORDLENGTH UART_WORDLENGTH_8B      // UART_WORDLENGTH_8B or UART_WORDLENGTH_9B
 
@@ -82,7 +82,7 @@
 
 // ###### CONTROL VIA TWO POTENTIOMETERS ######
 // ADC-calibration to cover the full poti-range: connect potis to left sensor board cable (0 to 3.3V) (do NOT use the red 15V wire in the cable!). see <How to calibrate>. turn the potis to minimum position, write value 1 to ADC1_MIN and value 2 to ADC2_MIN. turn to maximum position and repeat it for ADC?_MAX. make, flash and test it.
-#define CONTROL_ADC               // use ADC as input. disable DEBUG_SERIAL_USART2!
+//#define CONTROL_ADC               // use ADC as input. disable DEBUG_SERIAL_USART2!
 #define ADC1_MIN         0        // min ADC1-value while poti at minimum-position (0 - 4095)
 #define ADC1_ZERO     1500        // ADC1-value while poti at zero-position (0 - 4095)
 #define ADC1_MAX      4095        // max ADC1-value while poti at maximum-position (0 - 4095)
@@ -116,13 +116,13 @@
 // - weakr and weakl: field weakening for extra boost at high speed (speedR > 700 and speedL > 700). 0 to ~400
 
 #define FILTER              0.1  // lower value == softer filter. do not use values <0.01, you will get float precision issues.
-#define SPEED_COEFFICIENT   0.5  // higher value == stronger. 0.0 to ~2.0?
-#define STEER_COEFFICIENT   0.5  // higher value == stronger. if you do not want any steering, set it to 0.0; 0.0 to 1.0
+#define SPEED_COEFFICIENT  -1.0  // higher value == stronger. 0.0 to ~2.0?
+#define STEER_COEFFICIENT   1.0  // higher value == stronger. if you do not want any steering, set it to 0.0; 0.0 to 1.0
 #define INVERT_R_DIRECTION
 #define INVERT_L_DIRECTION
 //#define SWITCH_WHEELS            // switch right and left wheel. Watch out, you probably also need to invert directions.
 
-#define BEEPS_BACKWARD 1    // 0 or 1
+#define BEEPS_BACKWARD 0    // 0 or 1
 
 //Turbo boost at high speeds while button1 is pressed:
 //#define ADDITIONAL_CODE if (button1 && speedR > 700) { /* field weakening at high speeds */  weakl = cmd1 - 700; /* weak should never exceed 400 or 450 MAX!! */  weakr = cmd1 - 700; } else {  weakl = 0;  weakr = 0; }

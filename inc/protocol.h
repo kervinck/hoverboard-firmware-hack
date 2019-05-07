@@ -80,6 +80,8 @@ typedef struct {
     // wether steer is added or substracted depends on the side R/L
     int16_t base_pwm;
     int16_t steer;
+    // get back the actuals from the algorithm in main.c
+    int pwml, pwmr;
 } PWM_STEER_CMD;
 
 extern PWM_STEER_CMD PwmSteerCmd;
